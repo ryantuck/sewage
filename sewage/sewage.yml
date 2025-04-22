@@ -1,0 +1,45 @@
+models:
+  CleanTransaction:
+    transforms:
+      ChaseTransaction: transforms.clean_chase_transaction
+      AmazonTransaction: transforms.clean_amazon_transaction
+  AmazonTransaction:
+    extractors:
+      - csv
+  ChaseTransaction:
+    extractors:
+      - csv
+
+
+# Hierarchy (thinking block 6/27)
+  # tl;dr - hierarchies will often map naturally to physical
+  # tl;dr - datastores hierarchy maps to physical, flow organization maps to conceptual
+  # tl;dr - it shouldn't matter how they're fucking organized, as long as they adhere to a ProjectConfig model, right? I could choose to view the project config through an index of something?
+  # Physical hierarchy only sometimes maps to organizational hierarchy
+  # Best to document physical or conceptual in config?
+    # Sub-datastores do seem to belong to co-located objects.
+    # Counter-example: actual ETL workflow?
+      # Actually, the below better defines a flow anyway.
+      # Flows are internally-consistent. Datastores are (often?) implementation details.
+      # Transactions
+        # Sources
+          # local/csv/tx1
+          # local/csv/tx2
+        # Outputs
+          # drive/csv
+
+datastores:
+
+  local:
+    transactions:
+      location: local:///Users/ryantuck/Desktop/transactions
+      fmt: datastores
+      datastores:
+        amazon-transactions-dir:
+          location: /amazon
+          format: dir/csv
+          model: AmazonTransaction
+        chase-transactions-dir:
+          location: /chase
+          format: dir/csv
+          model: ChaseTransaction
