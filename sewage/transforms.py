@@ -34,3 +34,14 @@ def clean_transaction(
 
 def clean_transactions(sources: List) -> List[CleanTransaction]:
     return [clean_transaction(source) for source in sources]
+
+def transform(input_data, output_type):
+    transform_map = {
+        CleanTransaction: {
+            ChaseTransaction: clean_chase_transaction,
+            AmazonTransaction: clean_amazon_transaction,
+        }
+    }
+    input_type = type(input_data)
+    transform_fn = transform_map[output_type][input_type]
+    return transform_fn(input_data)
